@@ -4,10 +4,25 @@ import sys
 
 
 def get_public_ip():
-    """Get the current public IP address of the machine."""
-    response = requests.get('https://api.ipify.org?format=json')
-    ip = response.json()['ip']
-    return ip
+    """Get the current public IP address of the machine using multiple services."""
+    urls = [
+        'https://api.ipify.org?format=json',
+        'https://ipinfo.io/json',
+        'https://ifconfig.me/all.json'
+    ]
+
+    for url in urls:
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            if 'ip' in response.json():
+                return response.json()['ip']
+            elif 'ip' in response.json().get('ip', ''):
+                return response.json()['ip']
+        except requests.RequestException:
+            continue
+
+    raise Exception("Failed to retrieve public IP address from all services.")
 
 
 def read_ip_from_file(file_path):
