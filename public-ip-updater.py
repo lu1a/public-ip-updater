@@ -62,6 +62,7 @@ def main(api_key):
     else:
         print("IP address has not changed.")
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python check_ip.py <api_key>")
